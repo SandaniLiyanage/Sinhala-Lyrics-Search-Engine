@@ -104,9 +104,9 @@ app.get('/search', function (req, res) {
     d_genre = "genre"
 
     //if writer, artist, music or genre is present disable title
-    if (flags[4] == 1 || flags[2] == 1 || flags[5] == 1 || flags[3] == 1){
-        flags[1] = 0;
-    }
+    // if (flags[4] == 1 || flags[2] == 1 || flags[5] == 1 || flags[3] == 1){
+    //     flags[1] = 0;
+    // }
     if (flags[2] == 1){
         if(flags[0] == 1){
             fields_list.push(d_artist);
