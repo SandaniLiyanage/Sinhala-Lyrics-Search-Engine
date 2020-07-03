@@ -63,4 +63,8 @@ Boosting was used as the main query optimization technique. While querying, spec
 > Eg: If the user query contains the phrase 'ගැයූ', boost the artist field.
 
 ### Fuzzy search
-Fuzzy queries help to improve search performance by locating results that are likely to be relevant to a search query. Therefore, even though search phares and spellings are not exactly the same, highly relevant matches will be returned as measured by the Levenshtein edit distance.     
+Fuzzy queries help to improve search performance by locating results that are likely to be relevant to a search query. Therefore, even though search phares and spellings are not exactly the same, highly relevant matches will be returned as measured by the Levenshtein edit distance.
+
+Following diagram illustrates the basic flow followed when building queries.
+
+![Search Classification flow](flow.png)
