@@ -12,24 +12,24 @@ This repository contains the source code for a real-time sinhala lyrics search e
 ## Features
 ### Basic
 * Search by a song title.
-  >Eg:- ඝන අඳුරේ
+  * Eg:- ඝන අඳුරේ
 * Search by an artist name.
-  >Eg:- ක්ලැරන්ස් විජේවර්ධන, ක්ලැරන්ස් විජේවර්ධන ගැයූ
+  * Eg:- ක්ලැරන්ස් විජේවර්ධන, ක්ලැරන්ස් විජේවර්ධන ගැයූ
 * Search by a song genre.
-  >Eg:- පැරණි පොප්ස්
+  * Eg:- පැරණි පොප්ස්
 * Search by the lyric writer.
-  >Eg:- සුනිල් ආරියරත්න රචිත
+  * Eg:- සුනිල් ආරියරත්න රචිත
 * Search by a music producer.
-  >Eg:- ක්ලැරන්ස් විජේවර්ධන සංගීතවත් කල
+  * Eg:- ක්ලැරන්ස් විජේවර්ධන සංගීතවත් කල
 * Search by a lyrics.
-  >Eg:- සඳෙන් එහා කඳු මුදුන් ඉමේ
+  * Eg:- සඳෙන් එහා කඳු මුදුන් ඉමේ
 * Range queries
-  >Eg:- පැරණි පොප්ස් 5 ක්
+  * Eg:- පැරණි පොප්ස් 5 ක්
   
 ### Advanced
 
 * Search more complex queries  
-  >Eg:- ක්ලැරන්ස් විජේවර්ධන සංගීතමය හොඳම 5</br>
+  * Eg:- ක්ලැරන්ස් විජේවර්ධන සංගීතමය හොඳම 5</br>
          &nbsp; &nbsp; &nbsp; &nbsp; ටී.එම්.ජයරත්න ගැයූ පැරණි පොප්ස් 10
 * Search queries in both sinhala and singlish  
 
