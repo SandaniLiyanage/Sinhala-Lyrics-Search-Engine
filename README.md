@@ -62,3 +62,5 @@ The user search queries were preprocessed with rule based classification to iden
 Boosting was used as the main query optimization technique. While querying, specific fields identified using rule based classification was boosted to have more significance in the score calculation.   
 > Eg: If the user query contains the phrase 'ගැයූ', boost the artist field.
 
+### Fuzzy search
+Fuzzy queries help to locate results that are likely to be relevant to a search query. Therefore, even though search phares and spellings are not exactly the same, highly relevant matches will be returned as measured by the Levenshtein edit distance.     
