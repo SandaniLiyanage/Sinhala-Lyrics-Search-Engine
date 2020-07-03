@@ -143,7 +143,6 @@ app.get('/search', function (req, res) {
     //     }
     // }
 
-    console.log(input_query);
     //create queries
     if (flags[7] == -1){
         flags[7] = 20
@@ -182,8 +181,6 @@ app.get('/search', function (req, res) {
         }
     }else{
         fields_list = [d_title, d_artist, d_lyrics, d_writer, d_music, d_genre]
-        console.log(fields_list);
-        console.log(input_query);
         body = {
             "query": {
                 "query_string": {
