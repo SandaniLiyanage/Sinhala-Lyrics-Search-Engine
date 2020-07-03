@@ -47,16 +47,18 @@ Each song contains the following metadata.
 
 ## Indexing and Querying Techniques
 
-#### Use of Bulk API
+### Use of Bulk API
 Official Node.js library for [Elasticsearch](https://www.npmjs.com/package/elasticsearch) was used for indexing data. `bulk` API in Elasticsearch was used to perform many index operations in a single API call. This can greatly increase the indexing speed.Each subrequest is executed independently, so the failure of one sub-request won’t affect the success of the others. If any of the requests fail, the top-level error flag is set to true and the error details will be reported under the relevant request. 
 
-#### Use auto-generated ids
+### Use auto-generated ids
 When indexing a document that has an explicit id, Elasticsearch needs to check whether a document with the same id already exists within the same shard, which is a costly operation and gets even more costly as the index grows. By using auto-generated ids, Elasticsearch can skip this check, which makes indexing faster.
 
 ### Rule Based Classification 
 The user search queries were preprocessed with rule based classification to identify how to create queries for the elastic search backend. By analyzing the phrases, user search query were classified into different categories of searches based on the keywords present and relevant rules. 
 > Eg: If the user query contains a number, set the size of the search results to the given number. </br>
-&nbsp; &nbsp; &nbsp; If the user query contains a phrase like `හොදම`, sort the results by number of visits.
+&nbsp; &nbsp; &nbsp; If the user query contains the phrase 'හොදම', sort the results by number of visits.
 
-
+### Boosting 
+Boosting was used as the main query optimization technique. While querying, specific fields identified using rule based classification was boosted to have more significance in the score calculation.   
+> Eg: If the user query contains the phrase 'ගැයූ', boost the artist field.
 
