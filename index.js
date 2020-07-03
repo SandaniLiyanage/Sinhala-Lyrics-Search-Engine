@@ -55,14 +55,12 @@ app.get('/search', function (req, res) {
     var keywords = req.query.q.split(' ').map(item => item.trim());
 
     //  flag order =  [ 0 - is popular, 1 - title, 2 - artist, 3 - genre, 4 - writer, 5 - music, 6 - lyrics, 7 - output_size ]
-    flags = [0, 1, 0, 0, 0, 0, 0, -1]
+    flags = [0, 0, 0, 0, 0, 0, 0, -1]
 
-    music_keywords = ['සංගීතමය', 'සංගීතවත්', 'අධ්‍යක්ෂණය', 'සංගීත']
-    genre_keywords = ['පැරණි', 'පොප්ස්', 'පොප්', 'පරණ', 'ක්ලැසික්', 'ක්ලැසි', 'ඉල්ලීම', 'චිත්‍රපට', 'නව']
-    artist_keywords = ['කීව', 'කී', 'ගායනා කරන', 'ගයන', 'ගායනා', '‌ගේ', 'හඩින්', 'කියනා', 'කිව්ව', 'කිව්', 'කිව', 'ගායනය',
-        'ගායනා කළා', 'ගායනා කල', 'ගැයූ']
-    writer_keywords = ['ලියා', 'ලියූ', 'ලිව්ව', 'ලිව්', 'රචනා', 'ලියා ඇති', 'රචිත', 'ලියන ලද', 'ලියන', 'හදපු', 'පද',
-        'රචනය', 'හැදූ', 'හැදුව', 'ලියන', 'ලියන්න', 'ලීව', 'ලියපු', 'ලියා ඇත', 'ලිඛිත']
+    music_keywords = ['සංගීතමය', 'සංගීතවත්', 'අධ්‍යක්ෂණය', 'සංගීත', 'සංගීතවත් කල']
+    genre_keywords = ['පැරණි', 'පොප්ස්', 'පොප්', 'පරණ', 'ක්ලැසික්', 'ක්ලැසි', 'ඉල්ලීම', 'චිත්‍රපට', 'චිත්‍රපට ගීත', 'නව', 'වත්මන් ගීත', 'කණ්ඩායම් ගීත', 'ඕල්ඩීස්', 'යුගල', 'ගෝල්ඩන්', 'ළමා ගීත']
+    artist_keywords = ['කීව', 'කී', 'ගායනා කරන', 'ගයන', 'ගායනා', '‌ගේ', 'හඩින්', 'කියනා', 'කිව්ව', 'කිව්', 'කිව', 'ගායනය','ගායනා කළා', 'ගායනා කල', 'ගැයූ']
+    writer_keywords = ['ලියා', 'ලියූ', 'ලිව්ව', 'ලිව්', 'රචනා', 'ලියා ඇති', 'රචිත', 'ලියන ලද', 'ලියන', 'හදපු', 'පද','රචනය', 'හැදූ', 'හැදුව', 'ලියන', 'ලියන්න', 'ලීව', 'ලියපු', 'ලියා ඇත', 'ලිඛිත']
     popular_keywords = ['හොඳම', 'හොදම', 'ප්‍රසිද්ධ', 'ප්‍රසිද්ධම', 'ජනප්‍රිය', 'ජනප්‍රියතම', 'ඉස්තරම්', 'ඉස්තරම්ම', 'සුපිරි', 'සුපිරිම', 'පට්ට', 'මරු'];
 
     new_query = ""
@@ -82,6 +80,7 @@ app.get('/search', function (req, res) {
         //check for genre keywords
         }else if(genre_keywords.includes(element)){
             flags[3] = 1;
+            new_query = new_query + element + " ";
         //check for writer keywords
         }else if(writer_keywords.includes(element)){
             flags[4] = 1;
@@ -101,10 +100,11 @@ app.get('/search', function (req, res) {
     d_lyrics = "lyrics*"
     d_writer = "writer*"
     d_music = "music*"
-    d_genre = "genre"
+    d_genre = "genre*"
 
     //if writer, artist, music or genre is present disable title
     // if (flags[4] == 1 || flags[2] == 1 || flags[5] == 1 || flags[3] == 1){
+    //     console.log("disable title");
     //     flags[1] = 0;
     // }
     if (flags[2] == 1){
@@ -135,19 +135,21 @@ app.get('/search', function (req, res) {
             d_music += "^4"
         }
     }
-    if (flags[1] == 1){
-        if(flags[0] == 1){
-            fields_list.push(d_title);
-        }else{
-            d_title += "^4"
-        }
+    // if (flags[1] == 1){
+    //     if(flags[0] == 1){
+    //         fields_list.push(d_title);
+    //     }else{
+    //         d_title += "^4"
+    //     }
+    // }
+
+    console.log(input_query);
+    //create queries
+    if (flags[7] == -1){
+        flags[7] = 20
     }
 
     if (flags[0] == 1){
-        if (flags[7] == -1){
-            flags[7] = 20
-        }
-
         if (input_query.trim().length == 0){
             body = {
                 "sort": [{
@@ -180,6 +182,8 @@ app.get('/search', function (req, res) {
         }
     }else{
         fields_list = [d_title, d_artist, d_lyrics, d_writer, d_music, d_genre]
+        console.log(fields_list);
+        console.log(input_query);
         body = {
             "query": {
                 "query_string": {
@@ -187,7 +191,8 @@ app.get('/search', function (req, res) {
                     "type": "bool_prefix",
                     "fields": fields_list,
                 }
-            }
+            },
+            "size": flags[7]
         }
     }
       
