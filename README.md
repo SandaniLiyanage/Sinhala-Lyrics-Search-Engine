@@ -1,5 +1,5 @@
 # Sinhala-Lyrics-Search-Engine
-This repository contains the source code for a real-time sinhala lyrics search engine implemented using ElasticSearch, Node and Vue.
+This repository contains the source code for a real-time sinhala lyrics search engine implemented using [ElasticSearch](https://www.elastic.co/), [Node](https://nodejs.org/en/) and [Vue](https://vuejs.org/).
 
 ## Getting Started
 1. Get all the dependencies using `npm install` command.
@@ -34,16 +34,33 @@ This repository contains the source code for a real-time sinhala lyrics search e
 * Search queries in both sinhala and singlish  
 
 ## Data
-Orginal data was scraped from https://sinhalasongbook.com/all-sinhala-song-lyrics-and-chords/ page for educational purposes. Then the orginal data was translated to sinhala using [google-translate](https://www.npmjs.com/package/google-translate) Node.js module. The songs corpus contains lyrics for 1050 songs.
+The orginal data stored in `original_data.json` was scraped from https://sinhalasongbook.com/all-sinhala-song-lyrics-and-chords/ page for educational purposes. Then the original data was translated to sinhala using [google-translate](https://www.npmjs.com/package/google-translate) Node.js module. The processed data are stored in the `sinhala_songs.json`.This corpus contains lyrics for 1050 songs.
 
 Each song contains the following metadata.
-1. `title` : name of the song (string)
+1. `title` : Name of the song (string)
 2. `artist` : Singer of the song (string)
 3. `genre` : Category of the song (string)
 4. `writer` : Lyricist of the song (string)
 5. `music` : Music composer of the song (string)
 6. `visits` : Number of views for the song in original site (number)
-7. `lyrics` : lyric (lines seperated by \r\n) (string)
+7. `lyrics` : lyric (lines separated by \r\n) (string)
 
+## Indexing and Querying Techniques
 
+### Use of Bulk API
+Official Node.js library for [Elasticsearch](https://www.npmjs.com/package/elasticsearch) was used for indexing data. `bulk` API in Elasticsearch was used to perform many index operations in a single API call. This can greatly increase the indexing speed.Each subrequest is executed independently, so the failure of one sub-request won’t affect the success of the others. If any of the requests fail, the top-level error flag is set to true and the error details will be reported under the relevant request. 
 
+### Use auto-generated ids
+When indexing a document that has an explicit id, Elasticsearch needs to check whether a document with the same id already exists within the same shard, which is a costly operation and gets even more costly as the index grows. By using auto-generated ids, Elasticsearch can skip this check, which makes indexing faster.
+
+### Rule Based Classification 
+The user search queries were preprocessed with rule based classification to identify how to create queries for the elastic search backend. By analyzing the phrases, user search queries were classified into different categories of searches based on the keywords present and relevant rules. 
+> Eg: If the user query contains a number, set the size of the search results to the given number. </br>
+&nbsp; &nbsp; &nbsp; If the user query contains the phrase 'හොදම', sort the results by number of visits.
+
+### Boosting 
+Boosting was used as the main query optimization technique. While querying, specific fields identified using rule based classification were boosted to have more significance in the score calculation.   
+> Eg: If the user query contains the phrase 'ගැයූ', boost the artist field.
+
+### Fuzzy search
+Fuzzy queries help to improve search performance by locating results that are likely to be relevant to a search query. Therefore, even though search phares and spellings are not exactly the same, highly relevant matches will be returned as measured by the Levenshtein edit distance.     
