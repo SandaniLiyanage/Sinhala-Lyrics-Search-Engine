@@ -67,4 +67,4 @@ Fuzzy queries help to improve search performance by locating results that are li
 
 Following diagram illustrates the basic flow followed when building queries.
 
-![Search Classification flow](flow.png =500x500)
+<img src="flow.png" width="550px" height="600px">
