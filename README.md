@@ -34,7 +34,7 @@ This repository contains the source code for a real-time sinhala lyrics search e
 * Search queries in both sinhala and singlish  
 
 ## Data
-The orginal data stored in `original_data.json` was scraped from https://sinhalasongbook.com/all-sinhala-song-lyrics-and-chords/ page for educational purposes. Then the original data was translated to sinhala using [google-translate](https://www.npmjs.com/package/google-translate) Node.js module. The processed data are stored in the `sinhala_songs.json`.This corpus contains lyrics for 1050 songs.
+The orginal data stored in `original_data.json` was scraped from  the website [Sinhala Song Book](https://sinhalasongbook.com/all-sinhala-song-lyrics-and-chords/) for educational purposes. Then the original data was translated to sinhala using [google-translate](https://www.npmjs.com/package/google-translate) Node.js module. The processed data are stored in the `sinhala_songs.json`.This corpus contains lyrics for 1050 songs.
 
 Each song contains the following metadata.
 1. `title` : Name of the song (string)
