@@ -1,0 +1,300 @@
+<!DOCTYPE HTML>
+<html lang="si">
+
+<head>
+	<title>Home</title>
+	<meta charset="utf-8" />
+	<link rel="shortcut icon" href="images\favicon.ico">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="assets\css\main.css" />
+
+	<!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+	<script src="assets/js/axios.min.js"></script>
+	<script src="assets/js/vue.js"></script>
+</head>
+
+<body>
+	<div id="app">
+		<!-- Header -->
+		<header id="header" class="alt">
+			<a href="#main" class="scrolly">
+				<input type="text" id="search" class="border" placeholder="ඔබ සොයන්නේ කුමන ගීතයද?" v-model="query">
+				<!-- onkeyup="startText();" onselect="startText();" onclick="startText();"  -->
+			</a>
+		</header>
+
+		<!-- Banner -->
+		<section id="banner">
+			<div class="inner">
+				<header>
+					<h1 href="#main" class="scrolly">SearchTune</h1>
+					<p>ඔබේ ප්‍රියතම සිංහල ගීතවල පදවැල් සොයා ගැනීමට අවශ්‍යද?
+						<br>මෙන්න හරිම තැන</p>
+				</header>
+			</div>
+		</section>
+
+		<!-- Main -->
+		<div id="main">
+			<!-- Section -->
+			<section class="wrapper style1">
+				<div class="inner">
+
+					<div id="converted"></div>
+					<div class="flex flex-2" id="description"></div>
+
+					<div id="results" v-for="result in results">
+						<div class="result">
+							<img class="resultimg" src=" images/clipart.png">
+							<div>
+								<h5>
+									{{ result._source.title }} &mdash; {{result._source.artist }}
+									සංගීතය &mdash; {{result._source.music }}
+								<h6> පරිශීලකයින් ගණන &mdash; {{result._source.visits }}</h6>
+								</h5>
+								<p> {{result._source.lyrics}}</p>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</section>
+		</div>
+	</div>
+
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/skel.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
+
+<script>
+	$(document).ready(function () {
+		display();
+	});
+
+	var text;
+	var nVowels;
+	var consonants = new Array()
+	var consonantsUni = new Array()
+	var vowels = new Array()
+	var vowelsUni = new Array()
+	var vowelModifiersUni = new Array()
+	var specialConsonants = new Array()
+	var specialConsonantsUni = new Array()
+	var specialCharUni = new Array()
+	var specialChar = new Array()
+
+
+	vowelsUni[0] = 'ඌ'; vowels[0] = 'oo'; vowelModifiersUni[0] = 'ූ';
+	vowelsUni[1] = 'ඕ'; vowels[1] = 'o\\)'; vowelModifiersUni[1] = 'ෝ';
+	vowelsUni[2] = 'ඕ'; vowels[2] = 'oe'; vowelModifiersUni[2] = 'ෝ';
+	vowelsUni[3] = 'ආ'; vowels[3] = 'aa'; vowelModifiersUni[3] = 'ා';
+	vowelsUni[4] = 'ආ'; vowels[4] = 'a\\)'; vowelModifiersUni[4] = 'ා';
+	vowelsUni[5] = 'ඈ'; vowels[5] = 'Aa'; vowelModifiersUni[5] = 'ෑ';
+	vowelsUni[6] = 'ඈ'; vowels[6] = 'A\\)'; vowelModifiersUni[6] = 'ෑ';
+	vowelsUni[7] = 'ඈ'; vowels[7] = 'ae'; vowelModifiersUni[7] = 'ෑ';
+	vowelsUni[8] = 'ඊ'; vowels[8] = 'ii'; vowelModifiersUni[8] = 'ී';
+	vowelsUni[9] = 'ඊ'; vowels[9] = 'i\\)'; vowelModifiersUni[9] = 'ී';
+	vowelsUni[10] = 'ඊ'; vowels[10] = 'ie'; vowelModifiersUni[10] = 'ී';
+	vowelsUni[11] = 'ඊ'; vowels[11] = 'ee'; vowelModifiersUni[11] = 'ී';
+	vowelsUni[12] = 'ඒ'; vowels[12] = 'ea'; vowelModifiersUni[12] = 'ේ';
+	vowelsUni[13] = 'ඒ'; vowels[13] = 'e\\)'; vowelModifiersUni[13] = 'ේ';
+	vowelsUni[14] = 'ඒ'; vowels[14] = 'ei'; vowelModifiersUni[14] = 'ේ';
+	vowelsUni[15] = 'ඌ'; vowels[15] = 'uu'; vowelModifiersUni[15] = 'ූ';
+	vowelsUni[16] = 'ඌ'; vowels[16] = 'u\\)'; vowelModifiersUni[16] = 'ූ';
+	vowelsUni[17] = 'ඖ'; vowels[17] = 'au'; vowelModifiersUni[17] = 'ෞ';
+	vowelsUni[18] = 'ඇ'; vowels[18] = '/\a'; vowelModifiersUni[18] = 'ැ';
+
+	vowelsUni[19] = 'අ'; vowels[19] = 'a'; vowelModifiersUni[19] = '';
+	vowelsUni[20] = 'ඇ'; vowels[20] = 'A'; vowelModifiersUni[20] = 'ැ';
+	vowelsUni[21] = 'ඉ'; vowels[21] = 'i'; vowelModifiersUni[21] = 'ි';
+	vowelsUni[22] = 'එ'; vowels[22] = 'e'; vowelModifiersUni[22] = 'ෙ';
+	vowelsUni[23] = 'උ'; vowels[23] = 'u'; vowelModifiersUni[23] = 'ු';
+	vowelsUni[24] = 'ඔ'; vowels[24] = 'o'; vowelModifiersUni[24] = 'ො';
+	vowelsUni[25] = 'ඓ'; vowels[25] = 'I'; vowelModifiersUni[25] = 'ෛ';
+	nVowels = 26;
+
+	specialConsonantsUni[0] = 'ං'; specialConsonants[0] = /\\n/g;
+	specialConsonantsUni[1] = 'ඃ'; specialConsonants[1] = /\\h/g;
+	specialConsonantsUni[2] = 'ඞ'; specialConsonants[2] = /\\N/g;
+	specialConsonantsUni[3] = 'ඍ'; specialConsonants[3] = /\\R/g;
+	//special characher Repaya
+	specialConsonantsUni[4] = 'ර්' + '\u200D'; specialConsonants[4] = /R/g;
+	specialConsonantsUni[5] = 'ර්' + '\u200D'; specialConsonants[5] = /\\r/g;
+
+	consonantsUni[0] = 'ඬ'; consonants[0] = 'nnd';
+	consonantsUni[1] = 'ඳ'; consonants[1] = 'nndh';
+	consonantsUni[2] = 'ඟ'; consonants[2] = 'nng';
+	consonantsUni[3] = 'ථ'; consonants[3] = 'Th';
+	consonantsUni[4] = 'ධ'; consonants[4] = 'Dh';
+	consonantsUni[5] = 'ඝ'; consonants[5] = 'gh';
+	consonantsUni[6] = 'ඡ'; consonants[6] = 'Ch';
+	consonantsUni[7] = 'ඵ'; consonants[7] = 'ph';
+	consonantsUni[8] = 'භ'; consonants[8] = 'bh';
+	consonantsUni[9] = 'ශ'; consonants[9] = 'sh';
+	consonantsUni[10] = 'ෂ'; consonants[10] = 'Sh';
+	consonantsUni[11] = 'ඥ'; consonants[11] = 'GN';
+	consonantsUni[12] = 'ඤ'; consonants[12] = 'KN';
+	consonantsUni[13] = 'ළු'; consonants[13] = 'Lu';
+	consonantsUni[14] = 'ද'; consonants[14] = 'dh';
+	consonantsUni[15] = 'ච'; consonants[15] = 'ch';
+	consonantsUni[16] = 'ඛ'; consonants[16] = 'kh';
+	consonantsUni[17] = 'ත'; consonants[17] = 'th';
+
+	consonantsUni[18] = 'ට'; consonants[18] = 't';
+	consonantsUni[19] = 'ක'; consonants[19] = 'k';
+	consonantsUni[20] = 'ඩ'; consonants[20] = 'd';
+	consonantsUni[21] = 'න'; consonants[21] = 'n';
+	consonantsUni[22] = 'ප'; consonants[22] = 'p';
+	consonantsUni[23] = 'බ'; consonants[23] = 'b';
+	consonantsUni[24] = 'ම'; consonants[24] = 'm';
+	consonantsUni[25] = '‍ය'; consonants[25] = '\\u005C' + 'y';
+	consonantsUni[26] = '‍ය'; consonants[26] = 'Y';
+	consonantsUni[27] = 'ය'; consonants[27] = 'y';
+	consonantsUni[28] = 'ජ'; consonants[28] = 'j';
+	consonantsUni[29] = 'ල'; consonants[29] = 'l';
+	consonantsUni[30] = 'ව'; consonants[30] = 'v';
+	consonantsUni[31] = 'ව'; consonants[31] = 'w';
+	consonantsUni[32] = 'ස'; consonants[32] = 's';
+	consonantsUni[33] = 'හ'; consonants[33] = 'h';
+	consonantsUni[34] = 'ණ'; consonants[34] = 'N';
+	consonantsUni[35] = 'ළ'; consonants[35] = 'L';
+	consonantsUni[36] = 'ඛ'; consonants[36] = 'K';
+	consonantsUni[37] = 'ඝ'; consonants[37] = 'G';
+	consonantsUni[38] = 'ඨ'; consonants[38] = 'T';
+	consonantsUni[39] = 'ඪ'; consonants[39] = 'D';
+	consonantsUni[40] = 'ඵ'; consonants[40] = 'P';
+	consonantsUni[41] = 'ඹ'; consonants[41] = 'B';
+	consonantsUni[42] = 'ෆ'; consonants[42] = 'f';
+	consonantsUni[43] = 'ඣ'; consonants[43] = 'q';
+	consonantsUni[44] = 'ග'; consonants[44] = 'g';
+	//last because we need to ommit this in dealing with Rakaransha
+	consonantsUni[45] = 'ර'; consonants[45] = 'r';
+
+	specialCharUni[0] = 'ෲ'; specialChar[0] = 'ruu';
+	specialCharUni[1] = 'ෘ'; specialChar[1] = 'ru';
+	//specialCharUni[2]='්‍ර'; specialChar[2]='ra';
+
+	// create a new Vue instance
+	var app = new Vue({
+		el: '#app',
+		// declare the data for the component (An array that houses the results and a query that holds the current search string)
+		data: {
+			results: [],
+			query: ''
+		},
+		// declare methods in this Vue component. here only one method which performs the search is defined
+		methods: {
+			// make an axios request to the server with the current search query
+			search: function () {
+
+				var s, r, v;
+				text = this.query;
+				//special consonents
+				for (var i = 0; i < specialConsonants.length; i++) {
+					text = text.replace(specialConsonants[i], specialConsonantsUni[i]);
+				}
+				//consonents + special Chars
+				for (var i = 0; i < specialCharUni.length; i++) {
+					for (var j = 0; j < consonants.length; j++) {
+						s = consonants[j] + specialChar[i];
+						v = consonantsUni[j] + specialCharUni[i];
+						r = new RegExp(s, "g");
+						text = text.replace(r, v);
+					}
+				}
+				//consonants + Rakaransha + vowel modifiers
+				for (var j = 0; j < consonants.length; j++) {
+					for (var i = 0; i < vowels.length; i++) {
+						s = consonants[j] + "r" + vowels[i];
+						v = consonantsUni[j] + "්‍ර" + vowelModifiersUni[i];
+						r = new RegExp(s, "g");
+						text = text.replace(r, v);
+					}
+					s = consonants[j] + "r";
+					v = consonantsUni[j] + "්‍ර";
+					r = new RegExp(s, "g");
+					text = text.replace(r, v);
+				}
+				//consonents + vowel modifiers
+				for (var i = 0; i < consonants.length; i++) {
+					for (var j = 0; j < nVowels; j++) {
+						s = consonants[i] + vowels[j];
+						v = consonantsUni[i] + vowelModifiersUni[j];
+						r = new RegExp(s, "g");
+						text = text.replace(r, v);
+					}
+				}
+
+				//consonents + HAL
+				for (var i = 0; i < consonants.length; i++) {
+					r = new RegExp(consonants[i], "g");
+					text = text.replace(r, consonantsUni[i] + "්");
+				}
+
+				//vowels
+				for (var i = 0; i < vowels.length; i++) {
+					r = new RegExp(vowels[i], "g");
+					text = text.replace(r, vowelsUni[i]);
+				}
+				$("#converted").html('<h4>ඔබ සොයන්නේ : ' + text + '</h4>');
+
+				console.log("http://127.0.0.1:3001/search?q=" + text);
+				axios.get("http://127.0.0.1:3001/search?q=" + text)
+					.then(response => {
+						console.log(response.data.length);
+						if (response.data.length > 0) {
+							$("#description").html('<h5>ඔබගේ සෙවුමට ගැලපෙන ගීත ' + response.data.length + ' ක් මෙන්න...</h5>');
+						}
+						else {
+							$("#description").html('<p>සමාවන්න! ඔබගේ සෙවුමට ගැලපෙන ගීත කිසිවක් අපට හමු නොවීය. වෙනත් යෙදුමක් උත්සාහ කරන්න....</p>');
+						}
+						console.log(response)
+						this.results = response.data;
+					})
+			}
+		},
+
+		// declare Vue watchers
+		watch: {
+			// watch for change in the query string and recall the search method
+			query: function () {
+				if (this.query.length > 2) {
+					$("#description").html('<p>අපි ඔබේ ගීත ගෙන එන තුරු කරුණාකර සිටින්න...</p>');
+					this.search();
+				}
+				else {
+					$("#converted").empty();
+					display();
+
+				}
+
+
+			}
+		}
+
+	})
+
+	var script = '<div class="col col1">' +
+		'<div class="image round fit">' +
+		'<img src="images/note02.jpg" alt="" />' +
+		'</div >' + '</div >' +
+
+		'<div class="col col2">' +
+		'<h3>SearchTune වෙත සාදරයෙන් පිළිගනිමු!</h3>' +
+		'<p>ඔබ නම නොදන්නා ගීතයක පදවැල් සොයනවාද?' +
+		'දැන් ඔබට අපගේ ගීත එකතුවෙන් ඔබට අවශ්‍ය ඕනෑම ගීතයක් සෙවිය හැකිය!</p>' +
+		'<p>උපදෙස්: ඕනෑම ගීතයක පදවැල් කොටසක්, ගීතයේ නම, කලාකරුවා යනාදිය ටයිප් කරන්න ....</p></div >';
+
+	function display() {
+		$("#description").html(script); // The function returns the display
+	}
+</script>
